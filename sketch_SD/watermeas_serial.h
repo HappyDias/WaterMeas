@@ -1,0 +1,7 @@
+#ifndef __WATERMEAS_SERIAL__
+#define __WATERMEAS_SERIAL__
+
+#define SERIAL_COMMAND_LS 48
+#define SERIAL_COMMAND_FILE_READ 49
+
+#endif //__WATERMEAS_SERIAL__
