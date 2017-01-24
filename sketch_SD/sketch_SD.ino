@@ -5,6 +5,7 @@
 //Custom libraries.
 #include "watermeas_serial.h"
 #include "watermeas_SD.h"
+#include "watermeas_files.h"
 
 //Defines:
 
@@ -18,7 +19,8 @@ SdFat sd; //File system object.
 SdFile file; //Log file.
 SD_dbconf dbconf; //Structure containing the entire database configuration.
 const uint8_t chipSelect = 4; //SD chip select pin. Be sure to disable any other SPI devices such as Enet.
-
+String fileNAME;
+uint32_t value, theTime;
 
 //Serial variables
 char read_buffer[100];
@@ -40,10 +42,15 @@ void setup() {
       SD_configdb(&sd, &dbconf, FILE_BASE_NAME, 90); //Proceed with file initialization if SD library is working.
     }   
 
+
+    value=1;
+    fileNAME=FILE_BASE_NAME;
+    fileNAME=fileNAME+value;
+    fileNAME=fileNAME+".csv";
 }
 
 void loop() {
-
+  
     //Read data from serial
     if(Serial.available() > 0)
         for(int k = 0, n = Serial.available(); k < n; k++) read_buffer[serial_read_count++] = Serial.read();
@@ -107,5 +114,24 @@ void loop() {
 
     }
 
+    if(millis()<10000*value){
+        if(file.isOpen()){
+            Serial.print("open");
+            logData(&file,theTime);
+        }
+        else{
+            Serial.print("closed");
+            theTime=initRun(fileNAME.c_str(), &file);
+        }
+    }
+    else{
+        endRun(&file);
+        value=value+1;
+        fileNAME=FILE_BASE_NAME;
+        fileNAME=fileNAME+value;
+        fileNAME=fileNAME+".csv";
+        Serial.println(10000*value);
+        Serial.println(fileNAME.c_str());
+    }
 }
 
