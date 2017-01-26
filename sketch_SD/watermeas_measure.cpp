@@ -1,7 +1,7 @@
 #include "watermeas_measure.h"
 
 //Make measurement, write time and value to buffer
-void makeMeasurement(char* bufferStr, uint32_t startTime){
+void measure_makeMeasurement(char* bufferStr, uint32_t startTime){
   String dataStr;
   uint32_t currentTime;
   int sensorValue;
@@ -22,4 +22,14 @@ void makeMeasurement(char* bufferStr, uint32_t startTime){
   dataStr=dataStr+"\n";
 
   sprintf(bufferStr,"%s",dataStr.c_str());
+}
+
+//Write data to measurement file
+uint32_t measure_logData(SdFile* fileStream, uint32_t startTime) {
+  char measurement[14];
+  
+  // Write data to file.  Start with log time in micros.
+  measure_makeMeasurement(measurement,startTime);
+  
+  return (fileStream->write(measurement)==sizeof(measurement));
 }

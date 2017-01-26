@@ -32,4 +32,10 @@ int SD_get_file_name(SdFat* sd, SD_dbconf* dbconfig, int file_number, char* file
 //List files.
 void SD_list_files(SdFat* sd, SD_dbconf* dbconfig, char* write_buffer);
 
+//Start a new measurement file.
+uint32_t SD_initRun(char* file_name, SdFile* file);
+
+//End current measurement file.
+void SD_endRun(SdFile *file);
+
 #endif //watermeas_SD

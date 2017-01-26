@@ -5,7 +5,7 @@
 //Custom libraries.
 #include "watermeas_serial.h"
 #include "watermeas_SD.h"
-#include "watermeas_files.h"
+#include "watermeas_measure.h"
 
 //Defines:
 
@@ -14,23 +14,26 @@
 
 //Global variables:
 
-//SD card variables
+//SD card variables:
 SdFat sd; //File system object.
 SdFile file; //Log file.
 SD_dbconf dbconf; //Structure containing the entire database configuration.
 const uint8_t chipSelect = 4; //SD chip select pin. Be sure to disable any other SPI devices such as Enet.
-String fileNAME;
-uint32_t value, theTime;
 
-//Serial variables
-char read_buffer[100];
-char write_buffer[100];
+//Serial variables:
+char read_buffer[150];
+char write_buffer[150];
 int serial_read_count;
+
+//Measurement variables:
+uint32_t theTime;
+uint32_t active_run;
+uint32_t last_measurement_time;
 
 void setup() {
 
     //Starting serial connection
-    Serial.begin(9600);
+    Serial.begin(115200);
     serial_read_count = 0; //Resetting the read counter (the program did not read anything yet).
 
     //Initialize the SD card at SPI_HALF_SPEED to avoid bus errors with breadboards. Use SPI_FULL_SPEED for better performance.
@@ -40,18 +43,16 @@ void setup() {
     else {
       Serial.print("We have succeeded to open a file.");
       SD_configdb(&sd, &dbconf, FILE_BASE_NAME, 90); //Proceed with file initialization if SD library is working.
-    }   
+    }
 
-
-    value=1;
-    fileNAME=FILE_BASE_NAME;
-    fileNAME=fileNAME+value;
-    fileNAME=fileNAME+".csv";
+    //In the beginning there are no ongoing measurement runs.
+    active_run = 0;
+    
 }
 
 void loop() {
   
-    //Read data from serial
+    //Read data from serial.
     if(Serial.available() > 0)
         for(int k = 0, n = Serial.available(); k < n; k++) read_buffer[serial_read_count++] = Serial.read();
 
@@ -99,7 +100,7 @@ void loop() {
                     sprintf(write_buffer, "Reading file %s...\n", fileName);
 
                     //Read target file.
-                    while( (aux = file.read(write_buffer, 10)) > 0){
+                    while( (aux = file.read(write_buffer, 128)) > 0){
                         Serial.write(write_buffer, aux);
                     }
 
@@ -112,26 +113,53 @@ void loop() {
   
         }
 
+        else if(read_buffer[0] == SERIAL_COMMAND_INIT_RUN){ //An init run command initializes a run file and gives the program permission to write sensor data to it
+
+            //Auxiliary variables for the new file name.
+            char file_name[13];
+
+            //Get the new file name.
+            SD_next_unused_file_name(&sd, &dbconf, file_name);
+            
+            //Open the new file name and initialize the measurement run.
+            theTime=SD_initRun(file_name, &file);
+
+            //Check if file is opened so the run can proceed.
+            if(file.isOpen()){
+                active_run = 1;
+                last_measurement_time = millis();
+                Serial.print("Measurement started using the file name: ");
+                Serial.println(file_name);
+            }
+            else
+                Serial.println("The measurement run could not be started (check used file name).");
+                
+        }
+
+        else if(read_buffer[0] == SERIAL_COMMAND_END_RUN){ //An end run command finalizes an ongoing run and closes the run file
+
+            //Close measurement run file if a run was active.
+            if(active_run){
+                SD_endRun(&file);
+                active_run = 0; //The run is nolonger active.
+                Serial.println("Ongoing measurement run stopped.");
+            }
+            else 
+                Serial.println("No ongoing measurement run to close. Ignoring command...");
+            
+        }
+
     }
 
-    if(millis()<10000*value){
-        if(file.isOpen()){
-            Serial.print("open");
-            logData(&file,theTime);
-        }
-        else{
-            Serial.print("closed");
-            theTime=initRun(fileNAME.c_str(), &file);
+    //Acquire data if there is an on-going measurement run.
+    if(active_run){
+
+        //Acquire according to the specified sampling time.
+        if( (millis() - last_measurement_time) >= SAMPLING_TIME ){
+            last_measurement_time = millis();
+            measure_logData(&file,theTime);
         }
     }
-    else{
-        endRun(&file);
-        value=value+1;
-        fileNAME=FILE_BASE_NAME;
-        fileNAME=fileNAME+value;
-        fileNAME=fileNAME+".csv";
-        Serial.println(10000*value);
-        Serial.println(fileNAME.c_str());
-    }
+        
 }
 

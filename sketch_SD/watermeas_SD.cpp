@@ -174,3 +174,21 @@ void SD_list_files(SdFat* sd, SD_dbconf* dbconf, char* write_buffer){
     }
 
 }
+
+//Start a new measurement file.
+uint32_t SD_initRun(char* file_name, SdFile* file){
+
+  //Get current time.
+  uint32_t time_log=millis();
+
+  //Try to open the file.
+  file->open(file_name, O_CREAT | O_WRITE | O_EXCL);
+
+  //Return the time of file creation.
+  return time_log;
+  
+}
+
+//End measurement file.
+void SD_endRun(SdFile *file){ file->close(); }
+
