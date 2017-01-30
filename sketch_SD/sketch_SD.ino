@@ -6,6 +6,7 @@
 #include "watermeas_serial.h"
 #include "watermeas_SD.h"
 #include "watermeas_measure.h"
+#include <TimeLib.h>
 
 //Defines:
 
@@ -147,6 +148,47 @@ void loop() {
             else 
                 Serial.println("No ongoing measurement run to close. Ignoring command...");
             
+        }
+
+        else if(read_buffer[0] == SERIAL_COMMAND_SYNC_TIME){ //Time sync command recieves a time string to get the most recent time onto the arduino
+
+            //Aux vars for time
+            char sent_time[11];
+            unsigned long sent_time_int;
+
+            Serial.println("A time Sync command was issued");
+            //Getting timestamp - ten character string
+            for(int k = 0; k < 10; k++){
+                sent_time[k]=read_buffer[k+2];
+            }
+            sent_time_int=atol(sent_time);
+            if(sent_time_int>1000000000 && sent_time_int<9999999999){
+
+                Serial.println("Good date, updating time");
+                Serial.println(sent_time_int);
+                setTime(sent_time_int);
+                Serial.print(hour());
+                Serial.print(":");
+                Serial.print(minute());
+                Serial.print(":");
+                Serial.print(second());
+                Serial.print(" ");
+                Serial.print(day());
+                Serial.print(" ");
+                Serial.print(month());
+                Serial.print(" ");
+                Serial.print(year()); 
+                Serial.println();
+            }
+            else
+                Serial.println("Bad date, not updated");
+                
+        }
+
+        else{
+
+            //Unrecognized command
+            Serial.println("Command not recognized")  ;
         }
 
     }
