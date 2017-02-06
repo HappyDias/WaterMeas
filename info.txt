@@ -1,9 +1,0 @@
-Create waterproof structure using molded piece. 3D printed case to hold the electronics. 1st option consists in envolving the case with hardned silicone with an acrylic base (the side mold can be done by 3D printing, but the PROBLEM here is that the silicone can stick to it). 2nd option consists in generating a silicone rubber mold arround the case, using 3D print walls and acrylic base for mold, and then turn it arround and close it with hardned silicone instead of having an acrylic base (the PROBLEM here is that silicone rubber is very liquid so the case might have to be pre-coated with waterproof paint). For the 2nd option vaseline will probably avoid the silicone mold to be stuck to the case or 3D printed walls and acrylic base mold.
-
-Paint shops:
--coriprel (Baixa Xiado) PROBABLY GOOD
--dyrup
--robbialac
-
-Mold / Waterproof materials:
-Silicone material sounds expensive, but it is the best. Wax is probably very dirty.
