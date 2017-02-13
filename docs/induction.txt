@@ -1,0 +1,10 @@
+Primary:
+	Transistor: 2N6488
+	DC voltage: 12V transformer
+	Resistor: 6ohm 15W, 2A with power of 12W for alternate current
+	Corcks and screws for metal (big side for a lot of coils)
+
+Seondary:
+	Corck and screw for metal
+	Wire coils and a matching capacitor (how?) -> coltage probably has to be 5V but we can see
+	Rectifier circuit for 5V (diode + capacitor)
