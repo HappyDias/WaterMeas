@@ -31,6 +31,16 @@ uint32_t theTime;
 uint32_t active_run;
 uint32_t last_measurement_time;
 
+//Testing the interrupt routines
+const byte ledPin = 13;
+const byte interruptPin = 2;
+volatile byte state = LOW;
+
+void blink() {
+  state = !state;
+  //Serial.print("WHOOOOPT");
+}
+
 void setup() {
 
     //Starting serial connection
@@ -48,11 +58,16 @@ void setup() {
 
     //In the beginning there are no ongoing measurement runs.
     active_run = 0;
+
+    //Interrupt pins - testing
+    pinMode(ledPin, OUTPUT);
+    pinMode(interruptPin, INPUT_PULLUP);
+    attachInterrupt(digitalPinToInterrupt(interruptPin), blink, RISING);
     
 }
 
 void loop() {
-  
+    digitalWrite(ledPin, state);
     //Read data from serial.
     if(Serial.available() > 0)
         for(int k = 0, n = Serial.available(); k < n; k++) read_buffer[serial_read_count++] = Serial.read();
@@ -202,6 +217,6 @@ void loop() {
             measure_logData(&file,theTime);
         }
     }
-        
+
 }
 
