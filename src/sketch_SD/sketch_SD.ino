@@ -17,7 +17,7 @@
 
 //SD card variables:
 SdFat sd; //File system object.
-SdFile file; //Log file.
+SdFile file; //File descriptor.
 SD_dbconf dbconf; //Structure containing the entire database configuration.
 const uint8_t chipSelect = 4; //SD chip select pin. Be sure to disable any other SPI devices such as Enet.
 
@@ -27,23 +27,11 @@ char write_buffer[150];
 int serial_read_count;
 
 //Measurement variables:
-uint32_t theTime;
-uint32_t active_run;
-uint32_t last_measurement_time;
-
-//Testing the interrupt routines
-const byte ledPin = 13;
-const byte interruptPin = 2;
-volatile byte state = LOW;
-
-void blink() {
-  state = !state;
-  //Serial.print("WHOOOOPT");
-}
+int active_run;
 
 void setup() {
 
-    //Starting serial connection
+    //Starting serial connection.
     Serial.begin(115200);
     serial_read_count = 0; //Resetting the read counter (the program did not read anything yet).
 
@@ -59,15 +47,13 @@ void setup() {
     //In the beginning there are no ongoing measurement runs.
     active_run = 0;
 
-    //Interrupt pins - testing
-    pinMode(ledPin, OUTPUT);
-    pinMode(interruptPin, INPUT_PULLUP);
-    attachInterrupt(digitalPinToInterrupt(interruptPin), blink, RISING);
+    //Setup interrupt to control measurement run status.
+    measure_config(1000);
     
 }
 
 void loop() {
-    digitalWrite(ledPin, state);
+    
     //Read data from serial.
     if(Serial.available() > 0)
         for(int k = 0, n = Serial.available(); k < n; k++) read_buffer[serial_read_count++] = Serial.read();
@@ -131,24 +117,8 @@ void loop() {
 
         else if(read_buffer[0] == SERIAL_COMMAND_INIT_RUN){ //An init run command initializes a run file and gives the program permission to write sensor data to it
 
-            //Auxiliary variables for the new file name.
-            char file_name[13];
-
-            //Get the new file name.
-            SD_next_unused_file_name(&sd, &dbconf, file_name);
-            
-            //Open the new file name and initialize the measurement run.
-            theTime=SD_initRun(file_name, &file);
-
-            //Check if file is opened so the run can proceed.
-            if(file.isOpen()){
-                active_run = 1;
-                last_measurement_time = millis();
-                Serial.print("Measurement started using the file name: ");
-                Serial.println(file_name);
-            }
-            else
-                Serial.println("The measurement run could not be started (check used file name).");
+            //Start run.
+            active_run = measure_start_run(&sd, &dbconf);
                 
         }
 
@@ -156,9 +126,7 @@ void loop() {
 
             //Close measurement run file if a run was active.
             if(active_run){
-                SD_endRun(&file);
-                active_run = 0; //The run is nolonger active.
-                Serial.println("Ongoing measurement run stopped.");
+                active_run = measure_stop_run(&sd, &dbconf); //The run is nolonger active.
             }
             else 
                 Serial.println("No ongoing measurement run to close. Ignoring command...");
@@ -203,20 +171,13 @@ void loop() {
         else{
 
             //Unrecognized command
-            Serial.println("Command not recognized")  ;
+            Serial.println("Command not recognized");
         }
 
     }
 
-    //Acquire data if there is an on-going measurement run.
-    if(active_run){
-
-        //Acquire according to the specified sampling time.
-        if( (millis() - last_measurement_time) >= SAMPLING_TIME ){
-            last_measurement_time = millis();
-            measure_logData(&file,theTime);
-        }
-    }
+    //Control measurement run status
+    active_run = measure_control(&sd, &dbconf);
 
 }
 
