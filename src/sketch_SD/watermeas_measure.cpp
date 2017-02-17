@@ -1,7 +1,7 @@
 #include "watermeas_measure.h"
 
 //Interrupt routine variables:
-const byte ledPin = 13;
+const byte ledPin = 18;
 const byte interruptPin = 2;
 volatile byte measure_button_pressed;
 volatile uint32_t measure_button_press_time;
