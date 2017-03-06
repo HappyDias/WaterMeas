@@ -131,7 +131,7 @@ void measure_makeMeasurement(char* bufferStr, uint32_t startTime){
   String dataStr;
   uint32_t currentTime;
   int sensorValue;
-  int analogInPin=A0;
+  int analogInPin=A1;
 
   //Get measurement from sensor
   sensorValue = analogRead(analogInPin);

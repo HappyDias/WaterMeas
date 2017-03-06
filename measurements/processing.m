@@ -1,6 +1,6 @@
 clear
 clc
-close
+close all
 
 %Read data files and make plots
 a=dir('datafiles');
