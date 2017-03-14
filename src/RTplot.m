@@ -11,7 +11,9 @@ figure(1);
 ylim([0,1000]);
 hold on;
 h = [];
-while c~='|',end
+while c~='|',
+    c=char(fread(s,1,'uint8'));
+end
 while 1,
     strNum=[];
     c=char(fread(s,1,'uint8'));
