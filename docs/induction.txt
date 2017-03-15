@@ -8,3 +8,10 @@ Seondary:
 	Corck and screw for metal
 	Wire coils and a matching capacitor (how?) -> coltage probably has to be 5V but we can see
 	Rectifier circuit for 5V (diode + capacitor)
+
+
+O problema da indução é muito provavelmente as correntes que podem correr em cada lado. Qual é a corrente de que necessito para carregar a bateria?
+
+Arranjar transistor e meter no transformador de 12V. O controlo vai ter de ser de um Pi ou de outro arduino por exemplo (o arduino que não estamos a utilizar).
+
+Posso calcular um L da uma bobine? Por experiências? Por contas? Qual é o modelo de uma bobine? Como funciona um circuito indutivo?

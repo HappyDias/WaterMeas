@@ -10,3 +10,12 @@ Paint shops:
 
 Mold / Waterproof materials:
 Silicone material sounds expensive, but it is the best. Wax is probably very dirty.
+
+Sensor requirements:
+(1)comparison between two hands, and between people
+(2)technique evaluation (times on each stroke zone, maximum velocity according to the made force) -> research require on swimming studies.
+(3)velocity management (monitoring and real time feedback on swimmers performance - how to compute velocity?)
+
+TODO:
+-Develop software and singal processing that meets sensor requirements;
+-Hardware: battery charging; probe resistance; removing observed bug (is this electrical contact issue?); isolation with access to USB.
