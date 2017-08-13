@@ -19,3 +19,4 @@ Sensor requirements:
 TODO:
 -Develop software and singal processing that meets sensor requirements;
 -Hardware: battery charging; probe resistance; removing observed bug (is this electrical contact issue?); isolation with access to USB.
+    -switch and control battery level circuit

@@ -1,0 +1,8 @@
+http://hackaday.com/2015/03/18/how-to-directly-program-an-inexpensive-esp8266-wifi-module/
+https://github.com/esp8266/esp8266-wiki/wiki/Boot-Process#esp-boot-modes
+http://www.whatimade.today/esp8266-easiest-way-to-program-so-far/
+https://github.com/esp8266/esp8266-wiki/wiki/Hardware_versions
+
+TODO with ESP: programming with UART. Check arduino IDE. Program through WiFi.
+Program with WiFi: https://forum.arduino.cc/index.php?topic=344255.0
+Program with Raspberry pi: https://www.google.pt/amp/www.instructables.com/id/Develop-for-the-ESP8266-on-the-Raspberry-Pi/%3Famp_page%3Dtrue
