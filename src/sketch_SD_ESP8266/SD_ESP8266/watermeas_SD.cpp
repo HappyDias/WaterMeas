@@ -52,7 +52,7 @@ void SD_next_unused_file_name(SdClassWrap* sd, SD_dbconf* dbconf, char* file_nam
     //Check maximum file size.
     if (base_name_size > 6){
         Serial.println("base_name too long.");
-        exit(1);
+        return;
     }
 
     //Initialize file name.
@@ -68,7 +68,7 @@ void SD_next_unused_file_name(SdClassWrap* sd, SD_dbconf* dbconf, char* file_nam
         //Get next file name.
         if(SD_next_file_name(base_name_size, file_name) == 0){
             Serial.println("File number too large!!");
-            exit(1);
+            return;
         }
         
     }
@@ -92,7 +92,7 @@ int SD_number_of_existing_files(SdClassWrap* sd, SD_dbconf* dbconf){
     //Check maximum file size.
     if (base_name_size > 6){
         Serial.println("base_name too long.");
-        exit(1);
+        return 0;
     }
 
     //Initialize file name.
@@ -108,7 +108,7 @@ int SD_number_of_existing_files(SdClassWrap* sd, SD_dbconf* dbconf){
         //Get next file name.
         if(SD_next_file_name(base_name_size, file_name) == 0){
             Serial.println("File number too large!!");
-            exit(1);
+            return 0;
         }
         
     }

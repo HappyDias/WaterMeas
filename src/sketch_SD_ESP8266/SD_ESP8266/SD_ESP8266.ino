@@ -10,7 +10,6 @@
 #include "watermeas_SD.h"
 #include "watermeas_measure.h"
 
-
 //Defines:
 
 #define FILE_BASE_NAME "Data" //Log file base name.  Must be six characters or less.
@@ -92,7 +91,7 @@ void loop() {
 
                 //Open file for reading.
                 Serial.println(fileName);
-                if (!file.open(fileName, O_READ | O_WRITE)){
+                if ( !(file = sd.open(fileName, O_READ | O_WRITE)) ){
                     sprintf(write_buffer, "File %d not opened.\n", file_number); //Issue an error if open failed.
                     Serial.print(write_buffer);
                 }
