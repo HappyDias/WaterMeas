@@ -60,7 +60,7 @@ int measure_start_run(SdClassWrap* sd, SD_dbconf* dbconf){
     theTime=SD_initRun(sd, file_name, &measure_file);
 
     //Check if file is opened so the run can proceed.
-    if(!measure_file){
+    if(measure_file){
         measurement_run_active = HIGH;
         measurement_run_initialized = HIGH;
         last_measurement_time = millis();

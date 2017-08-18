@@ -134,7 +134,7 @@ void loop() {
             
         }
 
-        else if(read_buffer[0] == SERIAL_COMMAND_SYNC_TIME){ //Time sync command recieves a time string to get the most recent time onto the arduino
+        /*else if(read_buffer[0] == SERIAL_COMMAND_SYNC_TIME){ //Time sync command recieves a time string to get the most recent time onto the arduino
 
             //Aux vars for time
             char sent_time[11];
@@ -167,7 +167,7 @@ void loop() {
             else
                 Serial.println("Bad date, not updated");
                 
-        }
+        }*/
 
         else{
 

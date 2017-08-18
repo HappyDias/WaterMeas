@@ -188,7 +188,7 @@ uint32_t SD_initRun(SdClassWrap* sd, char* file_name, SdFileWrap* file){
   uint32_t time_log=millis();
 
   //Try to open the file.
-  (*file) = sd->open(file_name, O_CREAT | O_WRITE | O_EXCL);
+  (*file) = sd->open(file_name, FILE_WRITE);
 
   //Return the time of file creation.
   return time_log;
